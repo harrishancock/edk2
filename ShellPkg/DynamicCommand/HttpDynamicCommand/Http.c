@@ -683,6 +683,7 @@ RunHttp (
 
   ValueStr = ShellCommandLineGetValue (CheckPackage, L"-t");
   if (ValueStr != NULL) {
+    DEBUG((DEBUG_ERROR, "wtf, overridden on CLI"));
     Context.HttpConfigData.TimeOutMillisec = (UINT32)ShellStrToUintn (ValueStr);
   }
 

@@ -299,6 +299,7 @@ EfiHttpRequest (
   }
 
   if (Request == NULL) {
+    DEBUG((EFI_D_INFO, "Request == NULL (empty body I guess)\r\n"));
     //
     // Request would be NULL only for PUT/POST/PATCH operation (in the current implementation)
     //
@@ -329,6 +330,7 @@ EfiHttpRequest (
     Configure   = FALSE;
     ReConfigure = FALSE;
   } else {
+    DEBUG((EFI_D_INFO, "have body, I think\r\n"));
     //
     // Check whether the token already existed.
     //
@@ -364,7 +366,6 @@ EfiHttpRequest (
     //
     if (!PcdGetBool (PcdAllowHttpConnections) && !(HttpInstance->UseHttps)) {
       DEBUG ((DEBUG_ERROR, "EfiHttpRequest: HTTP is disabled.\n"));
-
       return EFI_ACCESS_DENIED;
     }
 
@@ -372,6 +373,7 @@ EfiHttpRequest (
     // Check whether we need to create Tls child and open the TLS protocol.
     //
     if (HttpInstance->UseHttps && (HttpInstance->TlsChildHandle == NULL)) {
+      DEBUG((EFI_D_INFO, "TLS!\r\n"));
       //
       // Use TlsSb to create Tls child and open the TLS protocol.
       //
@@ -388,15 +390,18 @@ EfiHttpRequest (
                                        &(HttpInstance->TlsConfiguration)
                                        );
       if (HttpInstance->TlsChildHandle == NULL) {
-        DEBUG((DEBUG_ERROR, "TlsChildHandle == NULL"));
+        DEBUG((DEBUG_ERROR, "TlsChildHandle == NULL\r\n"));
         return EFI_DEVICE_ERROR;
       }
+      DEBUG((EFI_D_INFO, "TLS child created\r\n"));
 
       TlsConfigure = TRUE;
     }
 
     UrlParser = NULL;
     Status    = HttpParseUrl (Url, (UINT32)AsciiStrLen (Url), FALSE, &UrlParser);
+    DEBUG((EFI_D_INFO, "parsed URL\r\n"));
+
     if (EFI_ERROR (Status)) {
       goto Error1;
     }
@@ -406,7 +411,10 @@ EfiHttpRequest (
       goto Error1;
     }
 
+    DEBUG((EFI_D_INFO, "Hostname: %s\r\n", HostName));
+
     if (HttpInstance->LocalAddressIsIPv6) {
+      DEBUG((EFI_D_INFO, "IPv6: checking if hostname is an IPv6 address\r\n"));
       HostNameSize = AsciiStrSize (HostName);
 
       if ((HostNameSize > 2) && (HostName[0] == '[') && (HostName[HostNameSize - 2] == ']')) {
@@ -428,6 +436,8 @@ EfiHttpRequest (
       }
     }
 
+    DEBUG((EFI_D_INFO, "RemotePort: %d\r\n", RemotePort));
+
     //
     // If Configure is TRUE, it indicates the first time to call Request();
     // If ReConfigure is TRUE, it indicates the request URL is not same
@@ -441,7 +451,10 @@ EfiHttpRequest (
       // Request() is called the first time.
       //
       ReConfigure = FALSE;
+      DEBUG((EFI_D_INFO, "Request called for the first time\r\n"));
     } else {
+      DEBUG((EFI_D_INFO, "Is subsequent request, reconfiguring\r\n"));
+
       if ((HttpInstance->ConnectionClose == FALSE) &&
           (HttpInstance->RemotePort == RemotePort) &&
           (AsciiStrCmp (HttpInstance->RemoteHost, HostName) == 0) &&
@@ -519,6 +532,8 @@ EfiHttpRequest (
     }
 
     if (EFI_ERROR (Status)) {
+      DEBUG((EFI_D_INFO, "Performing DNS resolution on hostname\r\n"));
+
       HostNameSize = AsciiStrSize (HostName);
       HostNameStr  = AllocateZeroPool (HostNameSize * sizeof (CHAR16));
       if (HostNameStr == NULL) {
@@ -527,13 +542,16 @@ EfiHttpRequest (
       }
 
       AsciiStrToUnicodeStrS (HostName, HostNameStr, HostNameSize);
+      DEBUG((EFI_D_INFO, "Calling HttpDns4/6()\r\n"));
       if (!HttpInstance->LocalAddressIsIPv6) {
         Status = HttpDns4 (HttpInstance, HostNameStr, &HttpInstance->RemoteAddr);
       } else {
         Status = HttpDns6 (HttpInstance, HostNameStr, &HttpInstance->RemoteIpv6Addr);
       }
 
+      DEBUG((EFI_D_INFO, "Calling HttpNotify\r\n"));
       HttpNotify (HttpEventDns, Status);
+      DEBUG((EFI_D_INFO, "Called HttpNotify\r\n"));
 
       FreePool (HostNameStr);
       if (EFI_ERROR (Status)) {
@@ -541,6 +559,8 @@ EfiHttpRequest (
         goto Error1;
       }
     }
+
+    DEBUG((EFI_D_INFO, "Done with DNS resolution\r\n"));
 
     //
     // Save the RemotePort and RemoteHost.
@@ -552,6 +572,8 @@ EfiHttpRequest (
   }
 
   if (ReConfigure) {
+    DEBUG((EFI_D_INFO, "Subsequent request, reconfiguring more stuff\r\n"));
+
     //
     // The request URL is different from previous calls to Request(), close existing TCP instance.
     //
@@ -589,6 +611,8 @@ EfiHttpRequest (
     Wrap->TcpWrap.Method = Request->Method;
   }
 
+  DEBUG((EFI_D_INFO, "Calling HttpInitSession\r\n"));
+
   Status = HttpInitSession (
              HttpInstance,
              Wrap,
@@ -604,6 +628,8 @@ EfiHttpRequest (
     //
     // For the new HTTP token, create TX TCP token events.
     //
+    DEBUG((EFI_D_INFO, "Creating new TX TCP token events\r\n"));
+
     Status = HttpCreateTcpTxEvent (Wrap);
     if (EFI_ERROR (Status)) {
       goto Error1;
@@ -633,6 +659,8 @@ EfiHttpRequest (
     }
   }
 
+  DEBUG((EFI_D_INFO, "HttpGenRequestMessage()\r\n"));
+
   Status = HttpGenRequestMessage (HttpMsg, FileUrl, &RequestMsg, &RequestMsgSize);
 
   if (EFI_ERROR (Status) || (NULL == RequestMsg)) {
@@ -657,6 +685,8 @@ EfiHttpRequest (
   //
   // Transmit the request message.
   //
+  DEBUG((EFI_D_INFO, "HttpTransmitTcp\r\n"));
+
   Status = HttpTransmitTcp (
              HttpInstance,
              Wrap,
@@ -677,9 +707,13 @@ EfiHttpRequest (
     HttpUrlFreeParser (UrlParser);
   }
 
+  DEBUG((EFI_D_INFO, "EfiHttpRequest() returning EFI_SUCCESS\r\n"));
+
   return EFI_SUCCESS;
 
 Error5:
+  DEBUG((EFI_D_INFO, "Error5\r\n"));
+
   //
   // We would have inserted a TxToken only if Request structure is not NULL.
   // Hence check before we do a remove in this error case.
@@ -689,17 +723,21 @@ Error5:
   }
 
 Error4:
+  DEBUG((EFI_D_INFO, "Error4\r\n"));
   if (RequestMsg != NULL) {
     FreePool (RequestMsg);
   }
 
 Error3:
+  DEBUG((EFI_D_INFO, "Error3\r\n"));
   if (HttpInstance->UseHttps) {
     TlsCloseSession (HttpInstance);
     TlsCloseTxRxEvent (HttpInstance);
   }
 
 Error2:
+  DEBUG((EFI_D_INFO, "Error2\r\n"));
+
   HttpCloseConnection (HttpInstance);
 
   HttpCloseTcpConnCloseEvent (HttpInstance);
@@ -714,6 +752,8 @@ Error2:
   }
 
 Error1:
+  DEBUG((EFI_D_INFO, "Error1\r\n"));
+
   if (HostName != NULL) {
     FreePool (HostName);
   }
@@ -997,6 +1037,8 @@ HttpResponseWorker (
   UINT32            TimeoutValue;
   UINTN             Index;
 
+  DEBUG((EFI_D_INFO, "HttpResponseWorker()\r\n"));
+
   if ((Wrap == NULL) || (Wrap->HttpInstance == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
@@ -1068,16 +1110,21 @@ HttpResponseWorker (
     // Get HTTP timeout value
     //
     TimeoutValue = PcdGet32 (PcdHttpIoTimeout);
+    DEBUG((EFI_D_INFO, "TimeoutValue (ms): %d\r\n", TimeoutValue));
 
     //
     // Start the timer, and wait Timeout seconds to receive the header packet.
     //
+    DEBUG((EFI_D_INFO, "Setting timer\r\n"));
     Status = gBS->SetTimer (HttpInstance->TimeoutEvent, TimerRelative, TimeoutValue * TICKS_PER_MS);
     if (EFI_ERROR (Status)) {
       goto Error;
     }
 
+    DEBUG((EFI_D_INFO, "HttpTcpReceiveHEader\r\n"));
     Status = HttpTcpReceiveHeader (HttpInstance, &SizeofHeaders, &BufferSize, HttpInstance->TimeoutEvent);
+
+    DEBUG((EFI_D_INFO, "Canceling timer\r\n"));
 
     gBS->SetTimer (HttpInstance->TimeoutEvent, TimerCancel, 0);
 
@@ -1367,6 +1414,7 @@ HttpResponseWorker (
     // Get HTTP timeout value
     //
     TimeoutValue = PcdGet32 (PcdHttpIoTimeout);
+    DEBUG((EFI_D_INFO, "TimeoutValue: %d\r\n", TimeoutValue));
 
     //
     // Start the timer, and wait Timeout seconds to receive the body packet.
