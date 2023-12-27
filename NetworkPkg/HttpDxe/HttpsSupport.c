@@ -789,6 +789,7 @@ TlsCommonTransmit (
 
     HttpInstance->Tcp4TlsTxToken.Packet.TxData = (EFI_TCP4_TRANSMIT_DATA *)Data;
 
+    DEBUG((EFI_D_INFO, "Preemptively setting status in TlsCommonTransit(), non-IPv6 branch"));
     Status = EFI_DEVICE_ERROR;
 
     //
@@ -796,6 +797,7 @@ TlsCommonTransmit (
     //
     Status = HttpInstance->Tcp4->Transmit (HttpInstance->Tcp4, &HttpInstance->Tcp4TlsTxToken);
     if (EFI_ERROR (Status)) {
+      DEBUG((DEBUG_ERROR, "HttpInstance->Tcp4->Transmit() returned error"));
       goto ON_EXIT;
     }
 
@@ -804,6 +806,7 @@ TlsCommonTransmit (
     }
 
     HttpInstance->TlsIsTxDone = FALSE;
+    DEBUG((EFI_D_INFO, "setting status to completiontoken status"));
     Status                    = HttpInstance->Tcp4TlsTxToken.CompletionToken.Status;
   } else {
     ((EFI_TCP6_TRANSMIT_DATA *)Data)->Push       = TRUE;
@@ -823,6 +826,7 @@ TlsCommonTransmit (
 
     HttpInstance->Tcp6TlsTxToken.Packet.TxData = (EFI_TCP6_TRANSMIT_DATA *)Data;
 
+    DEBUG((EFI_D_INFO, "Preemptively setting status in TlsCommonTransit(), IPv6 branch"));
     Status = EFI_DEVICE_ERROR;
 
     //
@@ -830,6 +834,7 @@ TlsCommonTransmit (
     //
     Status = HttpInstance->Tcp6->Transmit (HttpInstance->Tcp6, &HttpInstance->Tcp6TlsTxToken);
     if (EFI_ERROR (Status)) {
+      DEBUG((DEBUG_ERROR, "HttpInstance->Tcp6->Transmit() returned error"));
       goto ON_EXIT;
     }
 
@@ -838,6 +843,7 @@ TlsCommonTransmit (
     }
 
     HttpInstance->TlsIsTxDone = FALSE;
+    DEBUG((EFI_D_INFO, "setting status to completiontoken status"));
     Status                    = HttpInstance->Tcp6TlsTxToken.CompletionToken.Status;
   }
 

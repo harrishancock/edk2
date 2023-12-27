@@ -388,6 +388,7 @@ EfiHttpRequest (
                                        &(HttpInstance->TlsConfiguration)
                                        );
       if (HttpInstance->TlsChildHandle == NULL) {
+        DEBUG((DEBUG_ERROR, "TlsChildHandle == NULL"));
         return EFI_DEVICE_ERROR;
       }
 

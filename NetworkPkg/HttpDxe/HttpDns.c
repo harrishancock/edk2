@@ -160,11 +160,13 @@ HttpDns4 (
   Status = Token.Status;
   if (!EFI_ERROR (Status)) {
     if (Token.RspData.H2AData == NULL) {
+      DEBUG((EFI_D_INFO, "Token.RspData.H2AData == NULL\r\n"));
       Status = EFI_DEVICE_ERROR;
       goto Exit;
     }
 
     if ((Token.RspData.H2AData->IpCount == 0) || (Token.RspData.H2AData->IpList == NULL)) {
+      DEBUG((EFI_D_INFO, "Token.RspData.H2AData->IpCount == 0 or ->IpList == NULL\r\n"));
       Status = EFI_DEVICE_ERROR;
       goto Exit;
     }
@@ -362,11 +364,13 @@ HttpDns6 (
   Status = Token.Status;
   if (!EFI_ERROR (Status)) {
     if (Token.RspData.H2AData == NULL) {
+      DEBUG((EFI_D_INFO, "Token.RspData.H2AData == NULL\r\n"));
       Status = EFI_DEVICE_ERROR;
       goto Exit;
     }
 
     if ((Token.RspData.H2AData->IpCount == 0) || (Token.RspData.H2AData->IpList == NULL)) {
+      DEBUG((EFI_D_INFO, "Token.RspData.H2AData->IpCount == 0 or ->IpList == NULL\r\n"));
       Status = EFI_DEVICE_ERROR;
       goto Exit;
     }
