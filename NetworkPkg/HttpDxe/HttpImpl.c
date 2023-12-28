@@ -411,7 +411,7 @@ EfiHttpRequest (
       goto Error1;
     }
 
-    DEBUG((EFI_D_INFO, "Hostname: %s\r\n", HostName));
+    DEBUG((EFI_D_INFO, "Hostname: %a\r\n", HostName));
 
     if (HttpInstance->LocalAddressIsIPv6) {
       DEBUG((EFI_D_INFO, "IPv6: checking if hostname is an IPv6 address\r\n"));
