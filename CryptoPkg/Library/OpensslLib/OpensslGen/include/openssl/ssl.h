@@ -1197,7 +1197,7 @@ size_t SSL_get_peer_finished(const SSL *s, void *buf, size_t count);
 # define i2d_SSL_SESSION_bio(bp,s_id) ASN1_i2d_bio_of(SSL_SESSION,i2d_SSL_SESSION,bp,s_id)
 
 DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
-# define SSL_AD_REASON_OFFSET            1000/* offset to get SSL_R_... value
+# define SSL_AD_REASON_OFFSET            1001/* offset to get SSL_R_... value
                                               * from SSL_AD_... */
 /* These alert types are for SSLv3 and TLSv1 */
 # define SSL_AD_CLOSE_NOTIFY             SSL3_AD_CLOSE_NOTIFY
