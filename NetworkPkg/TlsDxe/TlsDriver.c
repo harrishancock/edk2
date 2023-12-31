@@ -340,32 +340,6 @@ TlsServiceBindingCreateChild (
     goto ON_ERROR;
   }
 
-  {
-    UINT8 Data[] = {
-      // This first element is the size, in bytes, of the rest of the vector,
-      // undocumented by the API. We'll initialize it later.
-      0,
-      TlsHashAlgoSha256,
-      TlsSignatureAlgoEcdsa,
-      TlsHashAlgoSha384,
-      TlsSignatureAlgoEcdsa,
-      TlsHashAlgoSha512,
-      TlsSignatureAlgoEcdsa,
-      TlsHashAlgoSha256,
-      TlsSignatureAlgoRsa,
-      TlsHashAlgoSha384,
-      TlsSignatureAlgoRsa,
-      TlsHashAlgoSha512,
-      TlsSignatureAlgoRsa,
-    };
-    _Static_assert(sizeof(Data) <= ~(UINT8)0, "Too many signature algorithms.");
-    Data[0] = sizeof(Data) - 1;
-    Status = TlsSetSignatureAlgoList (TlsInstance->TlsConn, (UINT8*)Data, sizeof(Data));
-    if (EFI_ERROR (Status)) {
-      return Status;
-    }
-  }
-
   //
   // Set default ConnectionEnd to EfiTlsClient
   //
