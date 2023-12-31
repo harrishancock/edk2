@@ -348,15 +348,15 @@ TlsServiceBindingCreateChild (
       TlsHashAlgoSha256,
       TlsSignatureAlgoEcdsa,
       TlsHashAlgoSha384,
-      TlsSignatureAlgoEcdsa;
-      TlsHashAlgoSha512;
-      TlsSignatureAlgoEcdsa;
-      TlsHashAlgoSha256;
-      TlsSignatureAlgoRsa;
-      TlsHashAlgoSha384;
-      TlsSignatureAlgoRsa;
-      TlsHashAlgoSha512;
-      TlsSignatureAlgoRsa;
+      TlsSignatureAlgoEcdsa,
+      TlsHashAlgoSha512,
+      TlsSignatureAlgoEcdsa,
+      TlsHashAlgoSha256,
+      TlsSignatureAlgoRsa,
+      TlsHashAlgoSha384,
+      TlsSignatureAlgoRsa,
+      TlsHashAlgoSha512,
+      TlsSignatureAlgoRsa,
     };
     _Static_assert(sizeof(Data) <= ~(UINT8)0, "Too many signature algorithms.");
     Data[0] = sizeof(Data) - 1;
