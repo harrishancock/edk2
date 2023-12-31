@@ -343,7 +343,7 @@ TlsServiceBindingCreateChild (
   {
     CHAR8 Data[128] = "RSA+SHA256:RSA+SHA384:ECDSA+SHA256:ECDSA+SHA384";
     UINTN DataSize = AsciiStrLen(Data);
-    Status = TlsSetSignatureAlgoList (TlsInstance->TlsConn, (UINT8)Data, DataSize);
+    Status = TlsSetSignatureAlgoList (TlsInstance->TlsConn, (UINT8*)Data, DataSize);
     if (EFI_ERROR (Status)) {
       return Status;
     }
