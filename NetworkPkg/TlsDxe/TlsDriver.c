@@ -341,7 +341,7 @@ TlsServiceBindingCreateChild (
   }
 
   UINT32 Curve = TlsEcNamedCurveX25519;
-  Status = TlsSetEcCurve (TlsInstance->TlsConn, &Curve, sizeof(Curve));
+  Status = TlsSetEcCurve (TlsInstance->TlsConn, (UINT8*)&Curve, sizeof(Curve));
   if (EFI_ERROR (Status)) {
     goto ON_ERROR;
   }
