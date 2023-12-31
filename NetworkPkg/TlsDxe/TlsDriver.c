@@ -358,7 +358,7 @@ TlsServiceBindingCreateChild (
       TlsHashAlgoSha512;
       TlsSignatureAlgoRsa;
     };
-    _Static_assert(sizeof(Data) <= UINT8_MAX, "Too many signature algorithms.");
+    _Static_assert(sizeof(Data) <= ~(UINT8)0, "Too many signature algorithms.");
     Data[0] = sizeof(Data) - 1;
     Status = TlsSetSignatureAlgoList (TlsInstance->TlsConn, (UINT8*)Data, sizeof(Data));
     if (EFI_ERROR (Status)) {
