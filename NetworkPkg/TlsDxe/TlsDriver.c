@@ -340,6 +340,12 @@ TlsServiceBindingCreateChild (
     goto ON_ERROR;
   }
 
+  UINT32 Curve = TlsEcNamedCurveX25519;
+  Status = TlsSetEcCurve (TlsInstance->TlsConn, &Curve, sizeof(Curve));
+  if (EFI_ERROR (Status)) {
+    goto ON_ERROR;
+  }
+
   //
   // Set default ConnectionEnd to EfiTlsClient
   //
