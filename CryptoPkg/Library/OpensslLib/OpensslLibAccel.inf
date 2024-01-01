@@ -22,8 +22,8 @@
   DEFINE OPENSSL_PATH            = openssl
   DEFINE OPENSSL_GEN_PATH        = OpensslGen
   DEFINE OPENSSL_FLAGS           = -DL_ENDIAN -DOPENSSL_SMALL_FOOTPRINT -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE -DEDK2_OPENSSL_NOEC=1
-  DEFINE OPENSSL_FLAGS_IA32      = -DAES_ASM -DGHASH_ASM -DMD5_ASM -DOPENSSL_CPUID_OBJ -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM
-  DEFINE OPENSSL_FLAGS_X64       = -DAES_ASM -DBSAES_ASM -DGHASH_ASM -DKECCAK1600_ASM -DMD5_ASM -DOPENSSL_CPUID_OBJ -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM
+  DEFINE OPENSSL_FLAGS_IA32      = -DAES_ASM -DGHASH_ASM -DMD5_ASM -DOPENSSL_CPUID_OBJ -DPOLY1305_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM
+  DEFINE OPENSSL_FLAGS_X64       = -DAES_ASM -DBSAES_ASM -DGHASH_ASM -DKECCAK1600_ASM -DMD5_ASM -DOPENSSL_CPUID_OBJ -DPOLY1305_ASM -DSHA1_ASM -DSHA256_ASM -DSHA512_ASM -DVPAES_ASM
 
 #
 #  VALID_ARCHITECTURES           = IA32 X64
@@ -398,6 +398,7 @@
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_mime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_smime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pkcs7err.c
+  $(OPENSSL_PATH)/crypto/poly1305/poly1305.c
   $(OPENSSL_PATH)/crypto/property/defn_cache.c
   $(OPENSSL_PATH)/crypto/property/property.c
   $(OPENSSL_PATH)/crypto/property/property_err.c
@@ -550,6 +551,10 @@
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_fips.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_cts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_null.c
   $(OPENSSL_PATH)/providers/implementations/digests/md5_prov.c
@@ -586,6 +591,7 @@
   $(OPENSSL_PATH)/providers/implementations/macs/gmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/hmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/kmac_prov.c
+  $(OPENSSL_PATH)/providers/implementations/macs/poly1305_prov.c
   $(OPENSSL_PATH)/providers/implementations/rands/crngt.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg_ctr.c
@@ -661,18 +667,22 @@
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/aes/aes-586.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/aes/aesni-x86.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/aes/vpaes-x86.nasm | MSFT
+  $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/chacha/chacha-x86.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/x86cpuid.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/md5/md5-586.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/modes/ghash-x86.nasm | MSFT
+  $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/poly1305/poly1305-x86.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/sha/sha1-586.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/sha/sha256-586.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-MSFT/crypto/sha/sha512-586.nasm | MSFT
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/aes/aes-586.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/aes/aesni-x86.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/aes/vpaes-x86.S | GCC
+  $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/chacha/chacha-x86.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/x86cpuid.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/md5/md5-586.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/modes/ghash-x86.S | GCC
+  $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/poly1305/poly1305-x86.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/sha/sha1-586.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/sha/sha256-586.S | GCC
   $(OPENSSL_GEN_PATH)/IA32-GCC/crypto/sha/sha512-586.S | GCC
@@ -1031,6 +1041,7 @@
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_mime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_smime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pkcs7err.c
+  $(OPENSSL_PATH)/crypto/poly1305/poly1305.c
   $(OPENSSL_PATH)/crypto/property/defn_cache.c
   $(OPENSSL_PATH)/crypto/property/property.c
   $(OPENSSL_PATH)/crypto/property/property_err.c
@@ -1182,6 +1193,10 @@
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_fips.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_cts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_null.c
   $(OPENSSL_PATH)/providers/implementations/digests/md5_prov.c
@@ -1218,6 +1233,7 @@
   $(OPENSSL_PATH)/providers/implementations/macs/gmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/hmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/kmac_prov.c
+  $(OPENSSL_PATH)/providers/implementations/macs/poly1305_prov.c
   $(OPENSSL_PATH)/providers/implementations/rands/crngt.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg_ctr.c
@@ -1297,10 +1313,12 @@
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/aes/aesni-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/aes/bsaes-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/aes/vpaes-x86_64.nasm | MSFT
+  $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/chacha/chacha-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/x86_64cpuid.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/md5/md5-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/modes/aesni-gcm-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/modes/ghash-x86_64.nasm | MSFT
+  $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/poly1305/poly1305-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/sha/keccak1600-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/sha/sha1-mb-x86_64.nasm | MSFT
   $(OPENSSL_GEN_PATH)/X64-MSFT/crypto/sha/sha1-x86_64.nasm | MSFT
@@ -1314,10 +1332,12 @@
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/aes/aesni-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/aes/bsaes-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/aes/vpaes-x86_64.s | GCC
+  $(OPENSSL_GEN_PATH)/X64-GCC/crypto/chacha/chacha-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/x86_64cpuid.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/md5/md5-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/modes/aesni-gcm-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/modes/ghash-x86_64.s | GCC
+  $(OPENSSL_GEN_PATH)/X64-GCC/crypto/poly1305/poly1305-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/sha/keccak1600-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/sha/sha1-mb-x86_64.s | GCC
   $(OPENSSL_GEN_PATH)/X64-GCC/crypto/sha/sha1-x86_64.s | GCC
