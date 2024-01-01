@@ -199,9 +199,6 @@ extern "C" {
 # ifndef OPENSSL_NO_POSIX_IO
 #  define OPENSSL_NO_POSIX_IO
 # endif
-# ifndef OPENSSL_NO_PSK
-#  define OPENSSL_NO_PSK
-# endif
 # ifndef OPENSSL_NO_RC2
 #  define OPENSSL_NO_RC2
 # endif
