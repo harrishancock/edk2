@@ -106,6 +106,10 @@ TlsCtxNew (
   //
   SSL_CTX_set_min_proto_version (TlsCtx, ProtoVersion);
 
+  if (SSL_CTX_set_ciphersuites(TlsCtx, "TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256") != 1) {
+    DEBUG((DEBUG_ERROR, "Unable to set ciphersuites"));
+  }
+
   return (VOID *)TlsCtx;
 }
 
