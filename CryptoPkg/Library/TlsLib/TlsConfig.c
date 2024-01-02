@@ -502,6 +502,10 @@ TlsSetVerifyHost (
 
   SSL_set_hostflags (TlsConn->Ssl, Flags);
 
+  if (SSL_set_tlsext_host_name (TlsConn->Ssl, HostName) != 1) {
+    DEBUG ((EFI_D_INFO, "Unable to set SNI for %a\r\n", HostName));
+  }
+
   VerifyParam = SSL_get0_param (TlsConn->Ssl);
   ASSERT (VerifyParam != NULL);
 
