@@ -171,6 +171,7 @@
   $(OPENSSL_PATH)/crypto/bn/bn_x931p.c
   $(OPENSSL_PATH)/crypto/buffer/buf_err.c
   $(OPENSSL_PATH)/crypto/buffer/buffer.c
+  $(OPENSSL_PATH)/crypto/chacha/chacha_enc.c
   $(OPENSSL_PATH)/crypto/comp/c_zlib.c
   $(OPENSSL_PATH)/crypto/comp/comp_err.c
   $(OPENSSL_PATH)/crypto/comp/comp_lib.c
@@ -385,6 +386,7 @@
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_mime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pk7_smime.c
   $(OPENSSL_PATH)/crypto/pkcs7/pkcs7err.c
+  $(OPENSSL_PATH)/crypto/poly1305/poly1305.c
   $(OPENSSL_PATH)/crypto/property/defn_cache.c
   $(OPENSSL_PATH)/crypto/property/property.c
   $(OPENSSL_PATH)/crypto/property/property_err.c
@@ -537,6 +539,10 @@
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_fips.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_aes_xts_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_hw.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305.c
+  $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_chacha20_poly1305_hw.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_cts.c
   $(OPENSSL_PATH)/providers/implementations/ciphers/cipher_null.c
   $(OPENSSL_PATH)/providers/implementations/digests/md5_prov.c
@@ -573,6 +579,7 @@
   $(OPENSSL_PATH)/providers/implementations/macs/gmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/hmac_prov.c
   $(OPENSSL_PATH)/providers/implementations/macs/kmac_prov.c
+  $(OPENSSL_PATH)/providers/implementations/macs/poly1305_prov.c
   $(OPENSSL_PATH)/providers/implementations/rands/crngt.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg.c
   $(OPENSSL_PATH)/providers/implementations/rands/drbg_ctr.c

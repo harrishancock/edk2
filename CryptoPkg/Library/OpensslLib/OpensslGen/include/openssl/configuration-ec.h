@@ -73,9 +73,6 @@ extern "C" {
 # ifndef OPENSSL_NO_CAST
 #  define OPENSSL_NO_CAST
 # endif
-# ifndef OPENSSL_NO_CHACHA
-#  define OPENSSL_NO_CHACHA
-# endif
 # ifndef OPENSSL_NO_CMAC
 #  define OPENSSL_NO_CMAC
 # endif
@@ -198,9 +195,6 @@ extern "C" {
 # endif
 # ifndef OPENSSL_NO_PADLOCKENG
 #  define OPENSSL_NO_PADLOCKENG
-# endif
-# ifndef OPENSSL_NO_POLY1305
-#  define OPENSSL_NO_POLY1305
 # endif
 # ifndef OPENSSL_NO_POSIX_IO
 #  define OPENSSL_NO_POSIX_IO
