@@ -141,12 +141,22 @@ static const OSSL_ALGORITHM_CAPABLE deflt_ciphers[] = {
     ALG(PROV_NAMES_AES_192_GCM, ossl_aes192gcm_functions),
     ALG(PROV_NAMES_AES_128_GCM, ossl_aes128gcm_functions),
 
+#ifndef OPENSSL_NO_CHACHA
+    ALG(PROV_NAMES_ChaCha20, ossl_chacha20_functions),
+# ifndef OPENSSL_NO_POLY1305
+    ALG(PROV_NAMES_ChaCha20_Poly1305, ossl_chacha20_ossl_poly1305_functions),
+# endif /* OPENSSL_NO_POLY1305 */
+#endif /* OPENSSL_NO_CHACHA */
+
     { { NULL, NULL, NULL }, NULL }
 };
 static OSSL_ALGORITHM exported_ciphers[OSSL_NELEM(deflt_ciphers)];
 
 static const OSSL_ALGORITHM deflt_macs[] = {
     { PROV_NAMES_HMAC, "provider=default", ossl_hmac_functions },
+#ifndef OPENSSL_NO_POLY1305
+    { PROV_NAMES_POLY1305, "provider=default", ossl_poly1305_functions },
+#endif
     { NULL, NULL, NULL }
 };
 
@@ -184,7 +194,10 @@ static const OSSL_ALGORITHM deflt_signature[] = {
 #ifndef OPENSSL_NO_EC
     { PROV_NAMES_ECDSA, "provider=default", ossl_ecdsa_signature_functions },
 #endif
-
+#ifndef OPENSSL_NO_POLY1305
+    { PROV_NAMES_POLY1305, "provider=default",
+      ossl_mac_legacy_poly1305_signature_functions },
+#endif
     { NULL, NULL, NULL }
 };
 
@@ -213,6 +226,9 @@ static const OSSL_ALGORITHM deflt_keymgmt[] = {
       PROV_DESCS_TLS1_PRF_SIGN },
     { PROV_NAMES_HKDF, "provider=default", ossl_kdf_keymgmt_functions,
       PROV_DESCS_HKDF_SIGN },
+
+    { PROV_NAMES_POLY1305, "provider=default", ossl_mac_legacy_keymgmt_functions,
+      PROV_DESCS_POLY1305_SIGN },
 
     { NULL, NULL, NULL }
 };
