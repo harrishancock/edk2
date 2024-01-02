@@ -177,6 +177,8 @@ static const OSSL_ALGORITHM deflt_keyexch[] = {
 #endif
 #ifndef OPENSSL_NO_EC
     { PROV_NAMES_ECDH, "provider=default", ossl_ecdh_keyexch_functions },
+    { PROV_NAMES_X25519, "provider=default", ossl_x25519_keyexch_functions },
+    { PROV_NAMES_X448, "provider=default", ossl_x448_keyexch_functions },
 #endif
     { PROV_NAMES_TLS1_PRF, "provider=default", ossl_kdf_tls1_prf_keyexch_functions },
     { PROV_NAMES_HKDF, "provider=default", ossl_kdf_hkdf_keyexch_functions },
@@ -192,6 +194,8 @@ static const OSSL_ALGORITHM deflt_rands[] = {
 static const OSSL_ALGORITHM deflt_signature[] = {
     { PROV_NAMES_RSA, "provider=default", ossl_rsa_signature_functions },
 #ifndef OPENSSL_NO_EC
+    { PROV_NAMES_ED25519, "provider=default", ossl_ed25519_signature_functions },
+    { PROV_NAMES_ED448, "provider=default", ossl_ed448_signature_functions },
     { PROV_NAMES_ECDSA, "provider=default", ossl_ecdsa_signature_functions },
 #endif
 #ifndef OPENSSL_NO_POLY1305
@@ -221,6 +225,14 @@ static const OSSL_ALGORITHM deflt_keymgmt[] = {
 #ifndef OPENSSL_NO_EC
     { PROV_NAMES_EC, "provider=default", ossl_ec_keymgmt_functions,
       PROV_DESCS_EC },
+    { PROV_NAMES_X25519, "provider=default", ossl_x25519_keymgmt_functions,
+      PROV_DESCS_X25519 },
+    { PROV_NAMES_X448, "provider=default", ossl_x448_keymgmt_functions,
+      PROV_DESCS_X448 },
+    { PROV_NAMES_ED25519, "provider=default", ossl_ed25519_keymgmt_functions,
+      PROV_DESCS_ED25519 },
+    { PROV_NAMES_ED448, "provider=default", ossl_ed448_keymgmt_functions,
+      PROV_DESCS_ED448 },
 #endif
     { PROV_NAMES_TLS1_PRF, "provider=default", ossl_kdf_keymgmt_functions,
       PROV_DESCS_TLS1_PRF_SIGN },
